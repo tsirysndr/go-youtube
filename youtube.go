@@ -2,6 +2,7 @@ package youtube
 
 import (
 	"github.com/dghubble/sling"
+	"golang.org/x/oauth2"
 )
 
 type Client struct {
@@ -21,10 +22,18 @@ type service struct {
 	client *Client
 }
 
-func NewClient(accessToken string) *Client {
+type KeyParam struct {
+	key string `url:"key"`
+}
+
+func NewClient(accessToken, apikey string) *Client {
+	config := &oauth2.Config{}
+	token := &oauth2.Token{AccessToken: accessToken}
+	httpClient := config.Client(oauth2.NoContext, token)
+	params := &KeyParam{apikey}
+	base := sling.New().Base("https://www.googleapis.com/youtube/v3/").Client(httpClient)
 	c := &Client{}
-	base := sling.New().Base("https://www.googleapis.com/youtube/v3/")
-	c.base = base
+	c.base = base.QueryStruct(params)
 	c.common.client = c
 	c.Category = (*CategoryService)(&c.common)
 	c.Channel = (*ChannelService)(&c.common)
