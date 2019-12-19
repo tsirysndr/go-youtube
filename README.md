@@ -37,7 +37,10 @@ import "github.com/tsirysndr/go-youtube"
 Construct a new YouTube client, then use the various services on the client to access different parts of the YouTube API. For example:
 
 ```Go
-client := youtube.NewClient("<YOUR TOKEN AUTHORIZATION>")
+client := youtube.NewClient("<YOUR TOKEN AUTHORIZATION>", "<YOUR API KEY>")
+result, _ := client.Search.Search("doja cat")
+r, _ := json.Marshal(result)
+fmt.Println(string(r))
 ```
 
 
