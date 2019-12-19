@@ -20,13 +20,13 @@
 go-youtube is a Go client library for accessing the [YouTube API](https://developers.google.com/youtube/v3/docs)
 
 
-## Install
+## 🚚 Install
 
 ```sh
 go get github.com/tsirysndr/go-youtube
 ```
 
-## Usage
+## 🚀 Usage
 
 Import the package into your project.
 
