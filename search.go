@@ -3,58 +3,58 @@ package youtube
 type SearchService service
 
 type SearchResult struct {
-	Kind          string `json:"kind"`
-	Etag          string `json:"etag"`
-	NextPageToken string `json:"nextPageToken"`
-	RegionCode    string `json:"regionCode"`
+	Kind          string `json:"kind,omitempty"`
+	Etag          string `json:"etag,omitempty"`
+	NextPageToken string `json:"nextPageToken,omitempty"`
+	RegionCode    string `json:"regionCode,omitempty"`
 	PageInfo      *struct {
-		TotalResults   int `json:"totalResults"`
-		ResultsPerPage int `json:"resultsPerPage"`
-	} `json:"pageInfo"`
-	Items []Item `json:"items"`
+		TotalResults   int `json:"totalResults,omitempty"`
+		ResultsPerPage int `json:"resultsPerPage,omitempty"`
+	} `json:"pageInfo,omitempty"`
+	Items []Item `json:"items,omitempty"`
 }
 
 type Item struct {
-	Kind string `json:"kind"`
-	Etag string `json:"etag"`
+	Kind string `json:"kind,omitempty"`
+	Etag string `json:"etag,omitempty"`
 	ID   *struct {
-		Kind      string  `json:"kind"`
-		ChannelID *string `json:"channelId"`
-		VideoID   *string `json:"videoId"`
-	} `json:"id"`
-	Snippet Snippet `json:"snippet"`
+		Kind      string  `json:"kind,omitempty"`
+		ChannelID *string `json:"channelId,omitempty"`
+		VideoID   *string `json:"videoId,omitempty"`
+	} `json:"id,omitempty"`
+	Snippet Snippet `json:"snippet,omitempty"`
 }
 
 type Snippet struct {
-	PublishedAt string     `json:"publishedAt"`
-	ChannelID   string     `json:"channelId"`
-	Title       string     `json:"title"`
-	Description string     `json:"description"`
-	Thumbnails  Thumbnails `json:"thumbnails"`
+	PublishedAt string     `json:"publishedAt,omitempty"`
+	ChannelID   string     `json:"channelId,omitempty"`
+	Title       string     `json:"title,omitempty"`
+	Description string     `json:"description,omitempty"`
+	Thumbnails  Thumbnails `json:"thumbnails,omitempty"`
 }
 
 type Thumbnails struct {
 	Default *struct {
-		URL    string `json:"url"`
-		Width  int    `json:"width"`
-		Height int    `json:"height"`
-	} `json:"default"`
+		URL    string `json:"url,omitempty"`
+		Width  int    `json:"width,omitempty"`
+		Height int    `json:"height,omitempty"`
+	} `json:"default,omitempty"`
 	Medium *struct {
-		URL    string `json:"url"`
-		Width  int    `json:"width"`
-		Height int    `json:"height"`
-	} `json:"medium"`
+		URL    string `json:"url,omitempty"`
+		Width  int    `json:"width,omitempty"`
+		Height int    `json:"height,omitempty"`
+	} `json:"medium,omitempty"`
 	High *struct {
-		URL    string `json:"url"`
-		Width  int    `json:"width"`
-		Height int    `json:"height"`
-	} `json:"high"`
+		URL    string `json:"url,omitempty"`
+		Width  int    `json:"width,omitempty"`
+		Height int    `json:"height,omitempty"`
+	} `json:"high,omitempty"`
 }
 
 type SearchParams struct {
-	Part       string `url:"part"`
-	MaxResults int    `url:"maxResults"`
-	Q          string `url:"q"`
+	Part       string `url:"part,omitempty"`
+	MaxResults int    `url:"maxResults,omitempty"`
+	Q          string `url:"q,omitempty"`
 }
 
 func (s *SearchService) Search(q string) (*SearchResult, error) {

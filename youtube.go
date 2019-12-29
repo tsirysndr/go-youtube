@@ -23,7 +23,7 @@ type service struct {
 }
 
 type KeyParam struct {
-	key string `url:"key"`
+	key string `url:"key,omitempty"`
 }
 
 func NewClient(accessToken, apikey string) *Client {
