@@ -1,70 +1,68 @@
 package youtube
 
+// SearchService provides access to the search collection.
 type SearchService service
 
+// SearchResult is the response envelope for search.list.
 type SearchResult struct {
-	Kind          string `json:"kind,omitempty"`
-	Etag          string `json:"etag,omitempty"`
-	NextPageToken string `json:"nextPageToken,omitempty"`
-	RegionCode    string `json:"regionCode,omitempty"`
-	PageInfo      *struct {
-		TotalResults   int `json:"totalResults,omitempty"`
-		ResultsPerPage int `json:"resultsPerPage,omitempty"`
-	} `json:"pageInfo,omitempty"`
-	Items []Item `json:"items,omitempty"`
+	ListResponse
+
+	Items []SearchItem `json:"items,omitempty"`
 }
 
-type Item struct {
-	Kind string `json:"kind,omitempty"`
-	Etag string `json:"etag,omitempty"`
-	ID   *struct {
-		Kind      string  `json:"kind,omitempty"`
-		ChannelID *string `json:"channelId,omitempty"`
-		VideoID   *string `json:"videoId,omitempty"`
-	} `json:"id,omitempty"`
-	Snippet Snippet `json:"snippet,omitempty"`
+// SearchItem is a single search result item.
+type SearchItem struct {
+	Kind    string      `json:"kind,omitempty"`
+	Etag    string      `json:"etag,omitempty"`
+	ID      *ResourceID `json:"id,omitempty"`
+	Snippet *Snippet    `json:"snippet,omitempty"`
+	// Note: the Snippet type is defined in youtube.go
 }
 
-type Snippet struct {
-	PublishedAt string     `json:"publishedAt,omitempty"`
-	ChannelID   string     `json:"channelId,omitempty"`
-	Title       string     `json:"title,omitempty"`
-	Description string     `json:"description,omitempty"`
-	Thumbnails  Thumbnails `json:"thumbnails,omitempty"`
-}
-
-type Thumbnails struct {
-	Default *struct {
-		URL    string `json:"url,omitempty"`
-		Width  int    `json:"width,omitempty"`
-		Height int    `json:"height,omitempty"`
-	} `json:"default,omitempty"`
-	Medium *struct {
-		URL    string `json:"url,omitempty"`
-		Width  int    `json:"width,omitempty"`
-		Height int    `json:"height,omitempty"`
-	} `json:"medium,omitempty"`
-	High *struct {
-		URL    string `json:"url,omitempty"`
-		Width  int    `json:"width,omitempty"`
-		Height int    `json:"height,omitempty"`
-	} `json:"high,omitempty"`
-}
-
+// SearchParams are the parameters for search.list.
 type SearchParams struct {
-	Part       string `url:"part,omitempty"`
-	MaxResults int    `url:"maxResults,omitempty"`
-	Q          string `url:"q,omitempty"`
+	Part            string `url:"part,omitempty"`
+	Q               string `url:"q,omitempty"`
+	MaxResults      int    `url:"maxResults,omitempty"`
+	Order           string `url:"order,omitempty"`
+	PageToken       string `url:"pageToken,omitempty"`
+	RegionCode      string `url:"regionCode,omitempty"`
+	RelevanceLanguage string `url:"relevanceLanguage,omitempty"`
+	SafeSearch      string `url:"safeSearch,omitempty"`
+	Type            string `url:"type,omitempty"`
+	VideoCaption    string `url:"videoCaption,omitempty"`
+	VideoCategoryID string `url:"videoCategoryId,omitempty"`
+	VideoDuration   string `url:"videoDuration,omitempty"`
+	VideoEmbeddable string `url:"videoEmbeddable,omitempty"`
+	VideoLicense    string `url:"videoLicense,omitempty"`
+	VideoSyndicated string `url:"videoSyndicated,omitempty"`
+	VideoType       string `url:"videoType,omitempty"`
+	ChannelID       string `url:"channelId,omitempty"`
+	ChannelType     string `url:"channelType,omitempty"`
+	Location        string `url:"location,omitempty"`
+	LocationRadius  string `url:"locationRadius,omitempty"`
+	PublishedAfter  string `url:"publishedAfter,omitempty"`
+	PublishedBefore string `url:"publishedBefore,omitempty"`
 }
 
-func (s *SearchService) Search(q string) (*SearchResult, error) {
-	var err error
-	params := &SearchParams{
-		"snippet",
-		25,
-		q,
+// Search performs a YouTube search. Pass an empty SearchParams{} for defaults
+// (part="snippet", maxResults=25).
+func (s *SearchService) Search(q string, params *SearchParams) (*SearchResult, error) {
+	if params == nil {
+		params = &SearchParams{Part: "snippet", MaxResults: 25}
 	}
-	result := new(SearchResult)
-	s.client.base.Get("search").QueryStruct(params).Receive(result, err)
-	return result, err
+	params.Q = q
+	if params.Part == "" {
+		params.Part = "snippet"
+	}
+	if params.MaxResults == 0 {
+		params.MaxResults = 25
+	}
+
+	res := new(SearchResult)
+	_, err := s.client.base.New().Get("search").QueryStruct(params).Receive(res, nil)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
